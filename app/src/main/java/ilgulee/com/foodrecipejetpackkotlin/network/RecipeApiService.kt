@@ -1,10 +1,11 @@
 package ilgulee.com.foodrecipejetpackkotlin.network
 
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.coroutines.Deferred
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
@@ -20,6 +21,7 @@ private val moshi = Moshi
 private val retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .addConverterFactory(MoshiConverterFactory.create(moshi))
+    .addCallAdapterFactory(CoroutineCallAdapterFactory())
     .client(okHttp.build())
     .build()
 
@@ -29,13 +31,13 @@ interface RecipeApiService {
         @Query("key") API_KEY: String
         , @Query("q") query: String
         , @Query("page") page: Int
-    ): Call<RecipeSearchResponse>
+    ): Deferred<RecipeSearchResponse>
 
     @GET("get")
     fun getRecipeGet(
         @Query("key") API_KEY: String
         , @Query("rId") recipe_id: String
-    ): Call<RecipeGetResponse>
+    ): Deferred<RecipeGetResponse>
 }
 
 object RecipeApi {
